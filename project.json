@@ -1,0 +1,10 @@
+{
+    "name": "自动江湖",
+    "main": "main.js",
+    "ignore": [
+        "build"
+    ],
+    "packageName": "indi.jiaxinzeng.ajh",
+    "versionName": "1.0.0",
+    "versionCode": 1
+}
