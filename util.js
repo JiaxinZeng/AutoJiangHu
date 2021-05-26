@@ -1,4 +1,4 @@
-const ocr = $plugins.load("com.hraps.ocr")
+// const ocr = $plugins.load("com.hraps.ocr")
 const ra = new RootAutomator()
 
 events.on('exit', () => {
@@ -6,7 +6,8 @@ events.on('exit', () => {
 })
 
 module.exports = {
-    wordOcr: function (img) {
+/*
+     wordOcr: function (img) {
         let ocrResults = ocr.detect(img.getBitmap(), 1)
         ocrResults = ocr.filterScore(ocrResults, 0.5, 0.5, 0.5)
         if (ocrResults.size() === 1) {
@@ -16,7 +17,8 @@ module.exports = {
         }
 
         return null
-    },
+    }, 
+*/
     tap: function () {
         if (arguments.length === 1) {
             let pos = arguments[0]

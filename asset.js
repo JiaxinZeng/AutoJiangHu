@@ -14,9 +14,6 @@ var Assets = {
     buttonChuanShang: images.read(
         files.path('./assets/穿上.png')
     ),
-    buttonJingRuYouXi: images.read(
-        files.path('./assets/进入游戏.png')
-    ),
     buttonShengJie: images.read(
         files.path('./assets/升阶按钮.png')
     ),
@@ -29,11 +26,11 @@ var Assets = {
     buttonNoName: images.read(
         files.path('./assets/按钮.png')
     ),
+    buttonNoName2: images.read(
+        files.path('./assets/按钮2.png')
+    ),
     logoJinJie: images.read(
         files.path('./assets/进阶.png')
-    ),
-    logoShouChongHaoLi: images.read(
-        files.path('./assets/首充豪礼.png')
     ),
     logoJueXing: images.read(
         files.path('./assets/觉醒.png')
