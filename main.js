@@ -148,6 +148,8 @@ while (running) {
         threshold: 0.9,
         region: [101, 7, 51, 27]
     })) {
+        fristEnterSubMenu = true
+
         console.log('当前位置： 主界面\n运行次数： ' + tick + '\n' + pos)
 
         // 主界面上有“交任务”按钮
@@ -169,54 +171,92 @@ while (running) {
         threshold: 0.9,
         region: [18, 0, 180, 64]
     })) {
-        console.log('当前位置： 进阶\n运行次数： ' + tick + '\n' + pos)
-
-        // 等待加载完毕
-        if (fristEnterSubMenu &&
-            !(match = images.matchTemplate(
-                screenImg,
-                Assets.wordShengJie,
-                {
-                    max: 1,
-                    threshold: 0.99,
-                    region: [0, 528],
-                }
-            ))) {
-            sleep(1000)
-            continue
-        }
-
         if (fristEnterSubMenu) {
             sleep(1000)
             screenImg = images.captureScreen()
             fristEnterSubMenu = false
         }
 
-        // 可以进阶
-        if (
-            (match = images.matchTemplate(screenImg, Assets.buttonShengJie, {
-                max: 1,
-                threshold: 0.99,
-                region: [0, 528],
-            }).best())
-            ||
-            (match = images.matchTemplate(screenImg, Assets.buttonShengJie2, {
-                max: 1,
-                threshold: 0.99,
-                region: [0, 528],
-            }).best())
-        ) {
-            console.log('按下按钮： “升阶”\n' + match)
-            Util.tap(
-                random(match.point.x + 30, match.point.x + 100),
-                random(match.point.y + 30, match.point.y + 43)
-            )
-            sleep(300)
+        // 坐骑进阶
+        if (pos = findImage(screenImg, Assets.charItemActive, {
+            threshold: 0.9,
+            region: [1113, 110, 22, 38]
+        })) {
+            console.log('当前位置： 坐骑进阶\n运行次数： ' + tick + '\n' + pos)
+
+            // 坐骑可以进阶
+            if (pos = images.findMultiColors(
+                screenImg,
+                "#ea824d",
+                [[-4, 7, "#ac290f"], [3, 8, "#b4280f"]],
+                {
+                    threshold: 0.9,
+                    region: [1267, 92, 7, 8]
+                }
+            )) {
+                console.log('可以进阶')
+
+                if (pos = findImage(screenImg, Assets.wordYiJianShengJie, {
+                    threshold: 0.9,
+                    region: [951, 661, 93, 21]
+                })) {
+                    console.log('按下按钮： 一建升阶\n' + pos)
+
+                    Util.randomTap(pos.x, pos.y, 93, 21)
+
+                    sleep(300)
+                }
+
+            }
+            else {
+                // 退出
+                Util.absRandomTap(1177, 17, 1205, 42)
+                sleep(1000)
+            }
         }
+
+        // 翅膀进阶
+        else if (pos = findImage(screenImg, Assets.charItemActive, {
+            threshold: 0.9,
+            region: [1113, 187, 22, 38]
+        })) {
+            console.log('当前位置： 翅膀进阶\n运行次数： ' + tick + '\n' + pos)
+
+            // 翅膀可以进阶
+            if (pos = images.findMultiColors(
+                screenImg,
+                "#e9814c",
+                [[-4, 8, "#a42007"], [2, 6, "#b73b19"]],
+                {
+                    threshold: 0.9,
+                    region: [1267, 169, 6, 8]
+                }
+            )) {
+                console.log('可以进阶')
+
+                if (pos = findImage(screenImg, Assets.wordYiJianShengJie, {
+                    threshold: 0.9,
+                    region: [952, 661, 93, 21]
+                })) {
+                    console.log('按下按钮： 一建升阶\n' + pos)
+
+                    Util.randomTap(pos.x, pos.y, 93, 21)
+
+                    sleep(300)
+                }
+            }
+            else {
+                // 退出
+                Util.absRandomTap(1177, 17, 1205, 42)
+                sleep(1000)
+            }
+        }
+
         else {
+            console.log('当前位置： 未知进阶\n运行次数： ' + tick + '\n' + pos)
+
             // 退出
             Util.absRandomTap(1177, 17, 1205, 42)
-            fristEnterSubMenu = true
             sleep(1000)
         }
     }
@@ -262,7 +302,6 @@ while (running) {
         else {
             // 退出
             Util.absRandomTap(1177, 17, 1205, 42)
-            fristEnterSubMenu = true
             sleep(1000)
         }
     }
@@ -322,7 +361,6 @@ while (running) {
         else {
             // 退出
             Util.absRandomTap(1177, 17, 1205, 42)
-            fristEnterSubMenu = true
             sleep(1000)
         }
     }
@@ -366,7 +404,6 @@ while (running) {
         else {
             // 退出
             Util.absRandomTap(1177, 17, 1205, 42)
-            fristEnterSubMenu = true
             sleep(1000)
         }
     }
@@ -396,7 +433,17 @@ while (running) {
         )) {
             console.log('可以升级')
 
-            if (pos = findImage(screenImg, Assets.wordYiJianShengJi, {
+            if (pos = findImage(screenImg, Assets.charRedPoint, {
+                threshold: 0.9,
+                region: [486, 611, 230, 71]
+            })) {
+                console.log('使用天石\n' + pos)
+
+                Util.randomTap(pos.x, pos.y, 10, 10)
+
+                sleep(300)
+            }
+            else if (pos = findImage(screenImg, Assets.wordYiJianShengJi, {
                 threshold: 0.9,
                 region: [961, 669, 93, 20]
             })) {
@@ -410,7 +457,104 @@ while (running) {
         else {
             // 退出
             Util.absRandomTap(1177, 17, 1205, 42)
-            fristEnterSubMenu = true
+            sleep(1000)
+        }
+    }
+
+    // 通过“背包”图标判断是否在背包界面
+    else if (pos = findImage(screenImg, Assets.logoBeiBao, {
+        threshold: 0.9,
+        region: [21, 8, 116, 40]
+    })) {
+        console.log('当前位置： 背包\n运行次数： ' + tick + '\n' + pos)
+
+        // 退出
+        Util.absRandomTap(1177, 17, 1205, 42)
+        sleep(1000)
+    }
+
+    // 通过“经脉”图标判断是否在经脉界面
+    else if (pos = findImage(screenImg, Assets.logoJingMai, {
+        threshold: 0.9,
+        region: [25, 5, 116, 44]
+    })) {
+        console.log('当前位置： 经脉\n运行次数： ' + tick + '\n' + pos)
+
+        if (fristEnterSubMenu) {
+            sleep(1000)
+            screenImg = images.captureScreen()
+            fristEnterSubMenu = false
+        }
+
+        // 可以通脉
+        if (pos = images.findMultiColors(
+            screenImg,
+            "#e77d4a",
+            [[-5, 7, "#a62209"], [3, 8, "#b1230b"]],
+            {
+                threshold: 0.9,
+                region: [1256, 562, 8, 8]
+            }
+        )) {
+            console.log('可以通脉')
+
+            if (pos = findImage(screenImg, Assets.wordTongMai, {
+                threshold: 0.9,
+                region: [817, 645, 45, 20]
+            })) {
+                console.log('按下按钮： 通脉\n' + pos)
+
+                Util.randomTap(pos.x, pos.y, 45, 20)
+
+                sleep(300)
+            }
+        }
+        else {
+            // 退出
+            Util.absRandomTap(1177, 17, 1205, 42)
+            sleep(1000)
+        }
+    }
+
+    // 通过“兵器谱”图标判断是否在兵器界面
+    else if (pos = findImage(screenImg, Assets.logoBingQiPu, {
+        threshold: 0.9,
+        region: [20, 6, 155, 43]
+    })) {
+        console.log('当前位置： 兵器\n运行次数： ' + tick + '\n' + pos)
+
+        if (fristEnterSubMenu) {
+            sleep(1000)
+            screenImg = images.captureScreen()
+            fristEnterSubMenu = false
+        }
+
+        // 可以激活
+        if (pos = images.findMultiColors(
+            screenImg,
+            "#e27645",
+            [[-3, 5, "#b33515"], [1, 8, "#a71d05"]],
+            {
+                threshold: 0.9,
+                region: [1258, 486, 4, 8]
+            }
+        )) {
+            console.log('可以激活')
+
+            if (pos = findImage(screenImg, Assets.wordJiHuo, {
+                threshold: 0.9,
+                region: [931, 647, 54, 26]
+            })) {
+                console.log('按下按钮： 激活\n' + pos)
+
+                Util.randomTap(pos.x, pos.y, 54, 26)
+
+                sleep(300)
+            }
+        }
+        else {
+            // 退出
+            Util.absRandomTap(1177, 17, 1205, 42)
             sleep(1000)
         }
     }

@@ -23,6 +23,15 @@ var Assets = {
     wordYiJianShengJi: images.read(
         files.path('./assets/一键升级.png')
     ),
+    wordTongMai: images.read(
+        files.path('./assets/通脉.png')
+    ),
+    wordJiHuo: images.read(
+        files.path('./assets/激活.png')
+    ),
+    wordYiJianShengJie: images.read(
+        files.path('./assets/一键升阶.png')
+    ),
     buttonJiaoRenWu: images.read(
         files.path('./assets/交任务.png')
     ),
@@ -65,6 +74,15 @@ var Assets = {
     logoLingQi: images.read(
         files.path('./assets/灵器.png')
     ),
+    logoBeiBao: images.read(
+        files.path('./assets/背包.png')
+    ),
+    logoJingMai: images.read(
+        files.path('./assets/经脉.png')
+    ),
+    logoBingQiPu: images.read(
+        files.path('./assets/兵器谱.png')
+    ),
     charInGameStartGame: images.read(
         files.path('./assets/游戏中开始游戏特征.png')
     ),
@@ -73,6 +91,15 @@ var Assets = {
     ),
     charMap: images.read(
         files.path('./assets/地图特征.png')
+    ),
+    charRedPoint: images.read(
+        files.path('./assets/红点.png')
+    ),
+    charArrowUp: images.read(
+        files.path('./assets/箭头上.png')
+    ),
+    charItemActive: images.read(
+        files.path('./assets/项目激活箭头.png')
     )
 }
 
