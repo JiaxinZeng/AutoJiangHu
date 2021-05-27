@@ -5,7 +5,7 @@ if (!$settings.isEnabled('foreground_service')) {
     $settings.setEnabled('foreground_service', true)
 }
 
-if (!images.requestScreenCapture(false)) {
+if (!requestScreenCapture(false)) {
     toastLog('请求截图失败')
     exit()
 }
@@ -17,24 +17,20 @@ let running = true
 // 运行次数
 let tick = 0
 
-/*
-// 底部按钮序号
-let wordNum = 0
-*/
-
 let lastEquipTime = 0
 
-// 首次进入进阶界面
-let fristEnterAdvanceMenu = true
+// 首次进入子菜单
+let fristEnterSubMenu = true
 
 while (running) {
-    let screenImg = images.captureScreen()
+    let screenImg = captureScreen()
 
-    // 判断界面的依据元素的位置
-    let pos;
+    let pos
+
+    let match
 
     // 首充弹窗
-    if (pos = images.findImage(screenImg, Assets.buttonNoName, {
+    if (pos = findImage(screenImg, Assets.buttonNoName, {
         threshold: 0.9,
         region: [1122, 69, 25, 23]
     })) {
@@ -48,7 +44,7 @@ while (running) {
     }
 
     // 首充弹窗2
-    if (pos = images.findImage(screenImg, Assets.buttonNoName2, {
+    if (pos = findImage(screenImg, Assets.buttonNoName2, {
         threshold: 0.9,
         region: [1136, 191, 14, 14]
     })) {
@@ -62,7 +58,7 @@ while (running) {
     }
 
     // 开始游戏弹窗
-    if (pos = images.findImage(screenImg, Assets.charInGameStartGame, {
+    if (pos = findImage(screenImg, Assets.charInGameStartGame, {
         threshold: 0.9,
         region: [547, 357, 63, 50]
     })) {
@@ -90,7 +86,7 @@ while (running) {
     }
 
     // 经验跑环弹窗
-    if (pos = images.findImage(screenImg, Assets.wordJingYanPaoHuan, {
+    if (pos = findImage(screenImg, Assets.wordJingYanPaoHuan, {
         threshold: 0.9,
         region: [574, 63, 95, 22]
     })) {
@@ -104,7 +100,7 @@ while (running) {
     }
 
     // 穿上装备弹窗
-    if (pos = images.findImage(screenImg, Assets.buttonChuanShang, {
+    if (pos = findImage(screenImg, Assets.buttonChuanShang, {
         threshold: 0.9,
         region: [867, 383, 111, 38]
     })) {
@@ -115,7 +111,7 @@ while (running) {
     }
 
     // 地图
-    if (pos = images.findImage(screenImg, Assets.charMap, {
+    if (pos = findImage(screenImg, Assets.charMap, {
         threshold: 0.9,
         region: [218, 180, 25, 96]
     })) {
@@ -125,14 +121,34 @@ while (running) {
         continue
     }
 
+    // 激活觉醒弹窗
+    if (pos = findImage(screenImg, Assets.wordDianJiJiHuo, {
+        threshold: 0.9,
+        region: [580, 609, 115, 27]
+    })) {
+        console.log('按下按钮： 点击激活')
+        Util.randomTap(580, 609, 115, 27)
+        sleep(1000)
+        continue
+    }
+
+    // 奖励弹窗
+    if (pos = findImage(screenImg, Assets.buttonNoName3, {
+        threshold: 0.9,
+        region: [844, 236, 17, 18]
+    })) {
+        console.log('按下按钮： 关闭')
+        Util.randomTap(844, 236, 17, 18)
+        sleep(1000)
+        continue
+    }
+
     // 通过战力字样判断是否在主界面
-    if (pos = images.findImage(screenImg, Assets.wordZhanLi, {
+    if (pos = findImage(screenImg, Assets.wordZhanLi, {
         threshold: 0.9,
         region: [101, 7, 51, 27]
     })) {
         console.log('当前位置： 主界面\n运行次数： ' + tick + '\n' + pos)
-
-        let match;
 
         // 主界面上有“交任务”按钮
         if (match = images.matchTemplate(screenImg, Assets.buttonJiaoRenWu, {
@@ -146,98 +162,6 @@ while (running) {
 
         if (lastEquipTime++ > 5)
             Util.randomTap(378, 573, 30, 30)
-
-        /* 
-                // 需要点击的底部按钮文字
-                let needToTapWords = ['觉', '骑', '宠', '翅']
-        
-                // 底部按钮文字
-                let word
-        
-                switch (wordNum++) {
-                    // 底部按钮1
-                    case 0:
-                        console.log('orc0')
-                        word = Util.wordOcr(
-                            images.scale(images.clip(screenImg, 368, 563, 44, 44), 2, 2)
-                        )
-                        if (word && needToTapWords.indexOf(word) > -1) {
-                            Util.randomTap(378, 573, 30, 30)
-                            sleep(1000)
-                            continue
-                        }
-                        break
-        
-                    // 底部按钮2
-                    case 5:
-                        console.log('orc1')
-                        word = Util.wordOcr(
-                            images.scale(images.clip(screenImg, 438, 563, 44, 44), 2, 2)
-                        )
-                        if (word && needToTapWords.indexOf(word) > -1) {
-                            Util.tap(
-                                random(438 + 10, 438 + 40),
-                                random(563 + 10, 563 + 40)
-                            )
-                            sleep(1000)
-                            continue
-                        }
-                        break
-        
-                    // 底部按钮3
-                    case 10:
-                        console.log('orc2')
-                        word = Util.wordOcr(
-                            images.scale(images.clip(screenImg, 509, 563, 44, 44), 2, 2)
-                        )
-                        if (word && needToTapWords.indexOf(word) > -1) {
-                            Util.tap(
-                                random(509 + 10, 509 + 40),
-                                random(563 + 10, 563 + 40)
-                            )
-                            sleep(1000)
-                            continue
-                        }
-                        break
-        
-                    // 底部按钮4
-                    case 15:
-                        console.log('orc3')
-                        word = Util.wordOcr(
-                            images.scale(images.clip(screenImg, 578, 563, 44, 44), 2, 2)
-                        )
-                        if (word && needToTapWords.indexOf(word) > -1) {
-                            Util.tap(
-                                random(578 + 10, 578 + 40),
-                                random(563 + 10, 563 + 40)
-                            )
-                            sleep(1000)
-                            continue
-                        }
-                        break
-        
-                    // 底部按钮5
-                    case 20:
-                        console.log('orc4')
-                        word = Util.wordOcr(
-                            images.scale(images.clip(screenImg, 648, 563, 44, 44), 2, 2)
-                        )
-                        if (word && needToTapWords.indexOf(word) > -1) {
-                            Util.tap(
-                                random(648 + 10, 648 + 40),
-                                random(563 + 10, 563 + 40)
-                            )
-                            sleep(1000)
-                            continue
-                        }
-                        break
-                    default:
-                        break
-                }
-        
-                if (wordNum > 20)
-                    wordNum = 0
-        */
     }
 
     // 通过"进阶"图标判断是否在进阶界面
@@ -247,22 +171,25 @@ while (running) {
     })) {
         console.log('当前位置： 进阶\n运行次数： ' + tick + '\n' + pos)
 
-        let match;
-
         // 等待加载完毕
-        while (!(match = images.matchTemplate(screenImg, Assets.wordShengJie, {
-            max: 1,
-            threshold: 0.99,
-            region: [0, 528],
-        }))) {
+        if (fristEnterSubMenu &&
+            !(match = images.matchTemplate(
+                screenImg,
+                Assets.wordShengJie,
+                {
+                    max: 1,
+                    threshold: 0.99,
+                    region: [0, 528],
+                }
+            ))) {
             sleep(1000)
-            screenImg = images.captureScreen()
+            continue
         }
 
-        if (fristEnterAdvanceMenu) {
+        if (fristEnterSubMenu) {
             sleep(1000)
             screenImg = images.captureScreen()
-            fristEnterAdvanceMenu = false
+            fristEnterSubMenu = false
         }
 
         // 可以进阶
@@ -289,7 +216,7 @@ while (running) {
         else {
             // 退出
             Util.absRandomTap(1177, 17, 1205, 42)
-            fristEnterAdvanceMenu = true
+            fristEnterSubMenu = true
             sleep(1000)
         }
     }
@@ -301,22 +228,25 @@ while (running) {
     })) {
         console.log('当前位置： 觉醒进阶\n运行次数： ' + tick + '\n' + pos)
 
-        let match;
-
         // 等待加载完毕
-        while (!(match = images.matchTemplate(screenImg, Assets.wordShengJie, {
-            max: 1,
-            threshold: 0.99,
-            region: [0, 528],
-        }))) {
+        if (fristEnterSubMenu &&
+            !(match = images.matchTemplate(
+                screenImg,
+                Assets.wordShengJie,
+                {
+                    max: 1,
+                    threshold: 0.99,
+                    region: [0, 528],
+                }
+            ))) {
             sleep(1000)
-            screenImg = images.captureScreen()
+            continue
         }
 
-        if (fristEnterAdvanceMenu) {
+        if (fristEnterSubMenu) {
             sleep(1000)
             screenImg = images.captureScreen()
-            fristEnterAdvanceMenu = false
+            fristEnterSubMenu = false
         }
 
         // 可以进阶
@@ -331,23 +261,158 @@ while (running) {
         }
         else {
             // 退出
-            Util.tap(
-                random(1177, 1205),
-                random(17, 42)
-            )
-            fristEnterAdvanceMenu = true
+            Util.absRandomTap(1177, 17, 1205, 42)
+            fristEnterSubMenu = true
             sleep(1000)
         }
     }
 
     // 通过“强化”图标判断是否在强化界面
-    else if (pos = images.findImage(screenImg, Assets.logoQiangHua, {
+    else if (pos = findImage(screenImg, Assets.logoQiangHua, {
         threshold: 0.9,
         region: [24, 4, 114, 47]
     })) {
         console.log('当前位置： 强化\n运行次数： ' + tick + '\n' + pos)
 
+        // 等待加载完毕
+        if (fristEnterSubMenu &&
+            !(match = images.matchTemplate(
+                screenImg,
+                Assets.wordQiangHua,
+                {
+                    max: 1,
+                    threshold: 0.99,
+                    region: [637, 609, 57, 25]
+                }
+            ))) {
+            sleep(1000)
+            continue
+        }
 
+        if (fristEnterSubMenu) {
+            sleep(1000)
+            screenImg = images.captureScreen()
+            fristEnterSubMenu = false
+        }
+
+        // 可以强化
+        if (images.findMultiColors(
+            screenImg,
+            "#e27645",
+            [[-3, 6, "#ab2a0d"], [4, 9, "#ca1e0c"]],
+            {
+                threshold: 0.99,
+                region: [743, 596, 7, 9]
+            }
+        )) {
+            console.log('可以强化')
+
+            if (match = images.matchTemplate(screenImg, Assets.wordZiDongQiangHua, {
+                max: 1,
+                threshold: 0.9,
+                region: [892, 609, 114, 25]
+            }).best()) {
+                console.log('按下按钮： “自动强化”\n' + match)
+
+                Util.randomTap(match.point.x, match.point.y, 114, 25)
+            }
+
+            sleep(300)
+        }
+        else {
+            // 退出
+            Util.absRandomTap(1177, 17, 1205, 42)
+            fristEnterSubMenu = true
+            sleep(1000)
+        }
+    }
+
+    // 通过“成就”图标判断是否在成就界面
+    else if (pos = findImage(screenImg, Assets.logoChengJiu, {
+        threshold: 0.9,
+        region: [21, 7, 118, 42]
+    })) {
+        console.log('当前位置： 成就\n运行次数： ' + tick + '\n' + pos)
+
+        if (fristEnterSubMenu) {
+            sleep(1000)
+            screenImg = images.captureScreen()
+            fristEnterSubMenu = false
+        }
+
+        // 可以领取
+        if (images.findMultiColors(
+            screenImg,
+            "#e9844c",
+            [[-5, 8, "#a21e05"], [5, 5, "#bc3e1b"]],
+            {
+                threshold: 0.9,
+                region: [1256, 408, 10, 8]
+            }
+        )) {
+            console.log('可以领取')
+
+            if (pos = findImage(screenImg, Assets.wordLingQu, {
+                threshold: 0.9,
+                region: [885, 60, 186, 660]
+            })) {
+                console.log('按下按钮： “领取”\n' + pos)
+
+                Util.randomTap(pos.x, pos.y, 44, 20)
+
+                sleep(300)
+            }
+        }
+        else {
+            // 退出
+            Util.absRandomTap(1177, 17, 1205, 42)
+            fristEnterSubMenu = true
+            sleep(1000)
+        }
+    }
+
+    // 通过“灵器”图标判断是否在灵器界面
+    else if (pos = findImage(screenImg, Assets.logoLingQi, {
+        threshold: 0.9,
+        region: [24, 5, 117, 46]
+    })) {
+        console.log('当前位置： 灵器\n运行次数： ' + tick + '\n' + pos)
+
+        if (fristEnterSubMenu) {
+            sleep(1000)
+            screenImg = images.captureScreen()
+            fristEnterSubMenu = false
+        }
+
+        // 可以升级
+        if (images.findMultiColors(
+            screenImg,
+            "#ea844d",
+            [[-5, 8, "#a9250c"], [5, 8, "#aa2211"]],
+            {
+                threshold: 0.9,
+                region: [1262, 100, 10, 8]
+            }
+        )) {
+            console.log('可以升级')
+
+            if (pos = findImage(screenImg, Assets.wordYiJianShengJi, {
+                threshold: 0.9,
+                region: [961, 669, 93, 20]
+            })) {
+                console.log('按下按钮： “一键升级”\n' + pos)
+
+                Util.randomTap(pos.x, pos.y, 93, 20)
+
+                sleep(300)
+            }
+        }
+        else {
+            // 退出
+            Util.absRandomTap(1177, 17, 1205, 42)
+            fristEnterSubMenu = true
+            sleep(1000)
+        }
     }
 
     else {

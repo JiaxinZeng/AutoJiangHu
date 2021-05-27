@@ -5,8 +5,23 @@ var Assets = {
     wordShengJie: images.read(
         files.path('./assets/升阶.png')
     ),
+    wordDianJiJiHuo:images.read(
+        files.path('./assets/点击激活.png')
+    ),
     wordJingYanPaoHuan: images.read(
         files.path('./assets/经验跑环.png')
+    ),
+    wordZiDongQiangHua: images.read(
+        files.path('./assets/自动强化.png')
+    ),
+    wordQiangHua: images.read(
+        files.path('./assets/强化2.png')
+    ),
+    wordLingQu: images.read(
+        files.path('./assets/领取.png')
+    ),
+    wordYiJianShengJi: images.read(
+        files.path('./assets/一键升级.png')
     ),
     buttonJiaoRenWu: images.read(
         files.path('./assets/交任务.png')
@@ -29,6 +44,9 @@ var Assets = {
     buttonNoName2: images.read(
         files.path('./assets/按钮2.png')
     ),
+    buttonNoName3: images.read(
+        files.path('./assets/按钮3.png')
+    ),
     logoJinJie: images.read(
         files.path('./assets/进阶.png')
     ),
@@ -40,6 +58,12 @@ var Assets = {
     ),
     logoQiangHua: images.read(
         files.path('./assets/强化.png')
+    ),
+    logoChengJiu: images.read(
+        files.path('./assets/成就.png')
+    ),
+    logoLingQi: images.read(
+        files.path('./assets/灵器.png')
     ),
     charInGameStartGame: images.read(
         files.path('./assets/游戏中开始游戏特征.png')
