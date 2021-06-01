@@ -20,7 +20,7 @@ module.exports = {
         }, 
     */
     tap: function () {
-        let duration = random(300, 400)
+        let duration = random(350, 400)
         if (arguments.length === 1) {
             let pos = arguments[0]
             ra.press(
@@ -40,7 +40,7 @@ module.exports = {
         }
     },
     randomTap: function (x, y, dx, dy) {
-        let duration = random(300, 400)
+        let duration = random(350, 400)
         ra.press(
             random(x, x + dx),
             random(y, y + dy),
@@ -49,7 +49,7 @@ module.exports = {
         sleep(duration)
     },
     absRandomTap: function (x, y, x1, y1) {
-        let duration = random(300, 400)
+        let duration = random(350, 400)
         ra.press(
             random(x, x1),
             random(y, y1),

@@ -19,6 +19,8 @@ let tick = 0
 
 let lastEquipTime = 0
 
+let lastMissionTime = 0
+
 // 首次进入子菜单
 let fristEnterSubMenu = true
 
@@ -29,6 +31,17 @@ while (running) {
 
     let match
 
+    // 经验跑环弹窗
+    if (pos = findImage(screenImg, Assets.wordJingYanPaoHuan, {
+        threshold: 0.9,
+        region: [574, 63, 95, 22]
+    })) {
+        console.log('遭遇经验跑环弹窗 正在关闭')
+        Util.absRandomTap(558, 506, 674, 532)
+        sleep(1000)
+        continue
+    }
+
     // 首充弹窗
     if (pos = findImage(screenImg, Assets.buttonNoName, {
         threshold: 0.9,
@@ -37,20 +50,6 @@ while (running) {
         console.log('遭遇首充弹窗 正在关闭')
         console.log('点击首充弹窗关闭按钮' + pos)
         Util.randomTap(pos.x, pos.y, 25, 23)
-
-        sleep(1000)
-
-        continue
-    }
-
-    // 首充弹窗2
-    if (pos = findImage(screenImg, Assets.buttonNoName2, {
-        threshold: 0.9,
-        region: [1136, 191, 14, 14]
-    })) {
-        console.log('遭遇首充弹窗2 正在关闭')
-        console.log('点击首充弹窗2关闭按钮' + pos)
-        Util.randomTap(pos.x, pos.y, 14, 14)
 
         sleep(1000)
 
@@ -79,20 +78,6 @@ while (running) {
         console.log('遭遇新功能开启弹窗 正在关闭')
 
         Util.absRandomTap(630, 350, 650, 370)
-
-        sleep(1000)
-
-        continue
-    }
-
-    // 经验跑环弹窗
-    if (pos = findImage(screenImg, Assets.wordJingYanPaoHuan, {
-        threshold: 0.9,
-        region: [574, 63, 95, 22]
-    })) {
-        console.log('遭遇经验跑环弹窗 正在关闭')
-
-        Util.absRandomTap(558, 506, 674, 532)
 
         sleep(1000)
 
@@ -143,6 +128,31 @@ while (running) {
         continue
     }
 
+    // 日常活动任务弹窗
+    if (pos = findImage(screenImg, Assets.wordQianWang, {
+        threshold: 0.9,
+        region: [610, 560, 44, 22]
+    })) {
+        console.log('按下按钮： 前往')
+        Util.randomTap(610, 560, 44, 22)
+        sleep(1000)
+        continue
+    }
+
+    // 首充弹窗2
+    if (pos = findImage(screenImg, Assets.buttonNoName2, {
+        threshold: 0.9,
+        region: [1136, 191, 14, 14]
+    })) {
+        console.log('遭遇首充弹窗2 正在关闭')
+        console.log('点击首充弹窗2关闭按钮' + pos)
+        Util.randomTap(pos.x, pos.y, 14, 14)
+
+        sleep(1000)
+
+        continue
+    }
+
     // 通过战力字样判断是否在主界面
     if (pos = findImage(screenImg, Assets.wordZhanLi, {
         threshold: 0.9,
@@ -159,11 +169,17 @@ while (running) {
             region: [157, 570, 82, 27]
         }).best()) {
             console.log('按下按钮： 交任务\n' + match)
+            lastMissionTime = 0
             Util.randomTap(match.point.x + 10, match.point.y + 10, 62, 7)
         }
 
         if (lastEquipTime++ > 5)
             Util.randomTap(378, 573, 30, 30)
+
+        if (lastMissionTime++ > 5) {
+            lastMissionTime = 0
+            Util.randomTap(88, 156, 107, 38)
+        }
     }
 
     // 通过"进阶"图标判断是否在进阶界面
@@ -252,8 +268,45 @@ while (running) {
             }
         }
 
+        // 宠物进阶
+        else if (pos = findImage(screenImg, Assets.charItemActive, {
+            threshold: 0.9,
+            region: [1113, 264, 22, 38]
+        })) {
+            console.log('当前位置： 宠物进阶\n运行次数： ' + tick + '\n' + pos)
+
+            // 宠物可以进阶
+            if (pos = images.findMultiColors(
+                screenImg,
+                "#e87f4b",
+                [[-5, 8, "#a01c04"], [3, 8, "#b3250d"]],
+                {
+                    threshold: 0.9,
+                    region: [1266, 246, 8, 8]
+                }
+            )) {
+                console.log('可以进阶')
+
+                if (pos = findImage(screenImg, Assets.wordYiJianShengJie, {
+                    threshold: 0.9,
+                    region: [952, 661, 93, 21]
+                })) {
+                    console.log('按下按钮： 一建升阶\n' + pos)
+
+                    Util.randomTap(pos.x, pos.y, 93, 21)
+
+                    sleep(300)
+                }
+            }
+            else {
+                // 退出
+                Util.absRandomTap(1177, 17, 1205, 42)
+                sleep(1000)
+            }
+        }
+
         else {
-            console.log('当前位置： 未知进阶\n运行次数： ' + tick + '\n' + pos)
+            console.log('当前位置： 未知进阶\n运行次数： ' + tick)
 
             // 退出
             Util.absRandomTap(1177, 17, 1205, 42)
@@ -311,54 +364,85 @@ while (running) {
         threshold: 0.9,
         region: [24, 4, 114, 47]
     })) {
-        console.log('当前位置： 强化\n运行次数： ' + tick + '\n' + pos)
-
-        // 等待加载完毕
-        if (fristEnterSubMenu &&
-            !(match = images.matchTemplate(
-                screenImg,
-                Assets.wordQiangHua,
-                {
-                    max: 1,
-                    threshold: 0.99,
-                    region: [637, 609, 57, 25]
-                }
-            ))) {
-            sleep(1000)
-            continue
-        }
-
         if (fristEnterSubMenu) {
             sleep(1000)
             screenImg = images.captureScreen()
             fristEnterSubMenu = false
         }
 
-        // 可以强化
-        if (images.findMultiColors(
-            screenImg,
-            "#e27645",
-            [[-3, 6, "#ab2a0d"], [4, 9, "#ca1e0c"]],
-            {
-                threshold: 0.99,
-                region: [743, 596, 7, 9]
-            }
-        )) {
-            console.log('可以强化')
+        // 装备强化
+        if (pos = findImage(screenImg, Assets.charItemActive, {
+            threshold: 0.9,
+            region: [1113, 110, 22, 38]
+        })) {
+            console.log('当前位置： 装备强化\n运行次数： ' + tick + '\n' + pos)
 
-            if (match = images.matchTemplate(screenImg, Assets.wordZiDongQiangHua, {
-                max: 1,
+            // 可以强化
+            if (images.findMultiColors(
+                screenImg,
+                "#e27645",
+                [[-3, 6, "#ab2a0d"], [4, 9, "#ca1e0c"]],
+                {
+                    threshold: 0.99,
+                    region: [743, 596, 7, 9]
+                }
+            )) {
+                console.log('可以强化')
+
+                if (match = images.matchTemplate(screenImg, Assets.wordZiDongQiangHua, {
+                    max: 1,
+                    threshold: 0.9,
+                    region: [892, 609, 114, 25]
+                }).best()) {
+                    console.log('按下按钮： “自动强化”\n' + match)
+
+                    Util.randomTap(match.point.x, match.point.y, 114, 25)
+                }
+
+                sleep(300)
+            }
+            else {
+                // 退出
+                Util.absRandomTap(1177, 17, 1205, 42)
+                sleep(1000)
+            }
+        }
+
+        // 宝石镶嵌
+        else if (pos = findImage(screenImg, Assets.charItemActive, {
+            threshold: 0.9,
+            region: [1113, 187, 22, 38]
+        })) {
+            console.log('当前位置： 宝石镶嵌\n运行次数： ' + tick + '\n' + pos)
+
+            // 可以镶嵌或合成
+            if (pos = findImage(screenImg, Assets.charRedPoint, {
                 threshold: 0.9,
-                region: [892, 609, 114, 25]
-            }).best()) {
-                console.log('按下按钮： “自动强化”\n' + match)
+                region: [1066, 163, 22, 557]
+            })) {
+                console.log('按下按钮： “镶嵌”或“合成”\n' + pos)
 
-                Util.randomTap(match.point.x, match.point.y, 114, 25)
+                Util.randomTap(pos.x - 69, pos.y + 6, 47, 23)
             }
+            else if (pos = findImage(screenImg, Assets.charArrowUp2, {
+                threshold: 0.9,
+                region: [89, 94, 142, 626]
+            })) {
+                console.log('按下按钮： “绿色箭头”\n' + pos)
 
+                Util.randomTap(pos.x, pos.y, 8, 11)
+            }
+            else {
+                // 退出
+                Util.absRandomTap(1177, 17, 1205, 42)
+                sleep(1000)
+            }
             sleep(300)
         }
+
         else {
+            console.log('当前位置： 未知进阶\n运行次数： ' + tick)
+
             // 退出
             Util.absRandomTap(1177, 17, 1205, 42)
             sleep(1000)

@@ -32,6 +32,9 @@ var Assets = {
     wordYiJianShengJie: images.read(
         files.path('./assets/一键升阶.png')
     ),
+    wordQianWang: images.read(
+        files.path('./assets/前往.png')
+    ),
     buttonJiaoRenWu: images.read(
         files.path('./assets/交任务.png')
     ),
@@ -97,6 +100,9 @@ var Assets = {
     ),
     charArrowUp: images.read(
         files.path('./assets/箭头上.png')
+    ),
+    charArrowUp2: images.read(
+        files.path('./assets/箭头上2.png')
     ),
     charItemActive: images.read(
         files.path('./assets/项目激活箭头.png')
