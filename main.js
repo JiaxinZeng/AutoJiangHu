@@ -95,7 +95,7 @@ while (running) {
         lastEquipTime = 0
     }
 
-    // 地图
+    // 地图弹窗
     if (pos = findImage(screenImg, Assets.charMap, {
         threshold: 0.9,
         region: [218, 180, 25, 96]
@@ -160,25 +160,48 @@ while (running) {
     })) {
         fristEnterSubMenu = true
 
-        console.log('当前位置： 主界面\n运行次数： ' + tick + '\n' + pos)
+        // 经验副本
+        if (
+            (pos = findImage(
+                screenImg,
+                Assets.wordGuWu,
+                {
+                    threshold: 0.9,
+                    region: [91, 343, 44, 21]
+                }
+            )) ||
+            (pos = findImage(screenImg,
+                Assets.wordGuWu2,
+                {
+                    threshold: 0.9,
+                    region: [91, 334, 44, 21]
+                }
+            ))
+        ) {
+            console.log('当前位置： 经验副本\n运行次数： ' + tick + '\n' + pos)
 
-        // 主界面上有“交任务”按钮
-        if (match = images.matchTemplate(screenImg, Assets.buttonJiaoRenWu, {
-            max: 1,
-            threshold: 0.9,
-            region: [157, 570, 82, 27]
-        }).best()) {
-            console.log('按下按钮： 交任务\n' + match)
-            lastMissionTime = 0
-            Util.randomTap(match.point.x + 10, match.point.y + 10, 62, 7)
         }
+        else {
+            console.log('当前位置： 主界面\n运行次数： ' + tick + '\n' + pos)
 
-        if (lastEquipTime++ > 5)
-            Util.randomTap(378, 573, 30, 30)
+            // 主界面上有“交任务”按钮
+            if (match = images.matchTemplate(screenImg, Assets.buttonJiaoRenWu, {
+                max: 1,
+                threshold: 0.9,
+                region: [157, 570, 82, 27]
+            }).best()) {
+                console.log('按下按钮： 交任务\n' + match)
+                lastMissionTime = 0
+                Util.randomTap(match.point.x + 10, match.point.y + 10, 62, 7)
+            }
 
-        if (lastMissionTime++ > 5) {
-            lastMissionTime = 0
-            Util.randomTap(88, 156, 107, 38)
+            if (lastEquipTime++ > 5)
+                Util.randomTap(378, 573, 30, 30)
+
+            if (lastMissionTime++ > 5) {
+                lastMissionTime = 0
+                Util.randomTap(88, 156, 107, 38)
+            }
         }
     }
 
@@ -641,6 +664,16 @@ while (running) {
             Util.absRandomTap(1177, 17, 1205, 42)
             sleep(1000)
         }
+    }
+
+    // 通过“副本”图标判断是否在副本界面
+    else if (pos = findImage(screenImg, Assets.logoFuBen, {
+        threshold: 0.9,
+        region: [22, 5, 116, 45]
+    })) {
+        console.log('当前位置： 副本\n运行次数： ' + tick + '\n' + pos)
+
+        Util.randomTap(841, 606, 56, 23)
     }
 
     else {

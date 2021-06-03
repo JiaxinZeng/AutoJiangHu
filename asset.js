@@ -35,6 +35,12 @@ var Assets = {
     wordQianWang: images.read(
         files.path('./assets/前往.png')
     ),
+    wordGuWu: images.read(
+        files.path('./assets/鼓舞.png')
+    ),
+    wordGuWu2: images.read(
+        files.path('./assets/鼓舞2.png')
+    ),
     buttonJiaoRenWu: images.read(
         files.path('./assets/交任务.png')
     ),
@@ -85,6 +91,9 @@ var Assets = {
     ),
     logoBingQiPu: images.read(
         files.path('./assets/兵器谱.png')
+    ),
+    logoFuBen: images.read(
+        files.path('./assets/副本.png')
     ),
     charInGameStartGame: images.read(
         files.path('./assets/游戏中开始游戏特征.png')
