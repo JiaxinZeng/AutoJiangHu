@@ -41,6 +41,21 @@ var Assets = {
     wordGuWu2: images.read(
         files.path('./assets/鼓舞2.png')
     ),
+    wordGuWu3: images.read(
+        files.path('./assets/鼓舞3.png')
+    ),
+    wordJingYan: images.read(
+        files.path('./assets/经验.png')
+    ),
+    wordTiGaoXiaoLv: images.read(
+        files.path('./assets/效率.png')
+    ),
+    wordTiGaoXiaoLv2: images.read(
+        files.path('./assets/效率2.png')
+    ),
+    wordGouMai: images.read(
+        files.path('./assets/购买.png')
+    ),
     buttonJiaoRenWu: images.read(
         files.path('./assets/交任务.png')
     ),

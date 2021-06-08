@@ -10,7 +10,7 @@ if (!requestScreenCapture(false)) {
     exit()
 }
 
-sleep(500)
+sleep(2000)
 
 let running = true
 
@@ -23,6 +23,19 @@ let lastMissionTime = 0
 
 // 首次进入子菜单
 let fristEnterSubMenu = true
+
+// 首次进入经验副本
+let fristEnterExpLevel = true
+
+// 首次打开鼓舞面板
+let fristOpenGuWuMenu = true
+
+// 首次打开效率面板
+let fristOpenXiaoLvMenu = true
+
+let pressGuWuBtnTimes = 0
+
+let pressShiYongBtnTimes = 0
 
 while (running) {
     let screenImg = captureScreen()
@@ -144,13 +157,63 @@ while (running) {
         threshold: 0.9,
         region: [1136, 191, 14, 14]
     })) {
-        console.log('遭遇首充弹窗2 正在关闭')
-        console.log('点击首充弹窗2关闭按钮' + pos)
+        console.log('按下按钮： 首充弹窗2关闭按钮' + pos)
         Util.randomTap(pos.x, pos.y, 14, 14)
 
         sleep(1000)
 
         continue
+    }
+
+    // 鼓舞弹窗
+    if (pos = findImage(screenImg, Assets.wordGuWu3, {
+        threshold: 0.9,
+        region: [501, 377, 48, 22]
+    })) {
+        console.log('遭遇鼓舞弹窗')
+
+        if (pressGuWuBtnTimes++ < 5) {
+            Util.randomTap(500, 376, 50, 24)
+            Util.randomTap(732, 376, 50, 24)
+            sleep(1000)
+            continue
+        }
+        else {
+            fristOpenGuWuMenu = false
+            Util.randomTap(837, 153, 18, 18)
+            sleep(2000)
+            continue
+        }
+    }
+
+    // 效率弹窗
+    if (pos = findImage(screenImg, Assets.wordJingYan, {
+        threshold: 0.9,
+        region: [527, 255, 45, 20]
+    })) {
+        console.log('遭遇效率弹窗')
+
+        if (pos = findImage(screenImg, Assets.wordGouMai, {
+            threshold: 0.9,
+            region: [764, 253, 48, 23]
+        })) {
+            fristOpenXiaoLvMenu = false;
+            Util.randomTap(837, 137, 18, 18)
+            sleep(2000)
+            continue
+        }
+
+        if (pressShiYongBtnTimes++ < 2) {
+            Util.randomTap(763, 253, 49, 22)
+            sleep(1000)
+            continue
+        }
+        else {
+            fristOpenXiaoLvMenu = false;
+            Util.randomTap(837, 137, 18, 18)
+            sleep(2000)
+            continue
+        }
     }
 
     // 通过战力字样判断是否在主界面
@@ -180,9 +243,42 @@ while (running) {
         ) {
             console.log('当前位置： 经验副本\n运行次数： ' + tick + '\n' + pos)
 
+            if (fristEnterExpLevel) {
+
+                if (fristOpenGuWuMenu) {
+                    pressGuWuBtnTimes = 0
+                    Util.randomTap(pos.x, pos.y, 44, 21)
+                    sleep(2000)
+                    continue
+                }
+                else if (fristOpenXiaoLvMenu) {
+                    pos = findImage(screenImg, Assets.wordTiGaoXiaoLv, {
+                        threshold: 0.9,
+                        region: [229, 334, 45, 21]
+                    })
+
+                    if (!pos) {
+                        pos = findImage(screenImg, Assets.wordTiGaoXiaoLv2, {
+                            threshold: 0.9,
+                            region: [229, 343, 45, 21]
+                        })
+                    }
+
+                    if (pos) {
+                        pressShiYongBtnTimes = 0
+                        Util.randomTap(pos.x, pos.y, 45, 21)
+                    }
+                    sleep(2000)
+                    continue
+                }
+                else
+                    fristEnterExpLevel = false
+            }
         }
         else {
             console.log('当前位置： 主界面\n运行次数： ' + tick + '\n' + pos)
+
+            fristEnterExpLevel = true
 
             // 主界面上有“交任务”按钮
             if (match = images.matchTemplate(screenImg, Assets.buttonJiaoRenWu, {
@@ -195,14 +291,14 @@ while (running) {
                 Util.randomTap(match.point.x + 10, match.point.y + 10, 62, 7)
             }
 
-            if (lastEquipTime++ > 5)
-                Util.randomTap(378, 573, 30, 30)
-
             if (lastMissionTime++ > 5) {
                 lastMissionTime = 0
                 Util.randomTap(88, 156, 107, 38)
             }
         }
+
+        if (lastEquipTime++ > 5)
+            Util.randomTap(378, 573, 30, 30)
     }
 
     // 通过"进阶"图标判断是否在进阶界面
